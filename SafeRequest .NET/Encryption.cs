@@ -8,18 +8,23 @@ using System.Threading.Tasks;
 
 namespace SafeRequest.NET {
 
-    class Encryption {
+    public class Encryption {
 
-        public static string EncryptString(string plainText, string key, byte[] iv = null) {
-            // determine init vector
-            if (iv == null) iv = _iv;
-            // get byte array from key [ bcrypt hash = cost factor ;) ]
-            byte[] encKey = GetBCryptKey(key);
-            // encrypt text with key/iv
+        public Encryption(string key) {
+            SHA256 mySHA256 = SHA256.Create();
+            _key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(key));
+            Console.WriteLine(Encoding.Default.GetString(_key));
+        }
+
+        private byte[] _key;
+        private byte[] _iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+        public void SetIV(byte[] iv) { _iv = iv; }
+
+        public string EncryptString(string plainText) {
             Aes encryptor = Aes.Create();
             encryptor.Mode = CipherMode.CBC;
-            encryptor.Key = encKey.Take(32).ToArray();
-            encryptor.IV = iv;
+            encryptor.Key = _key.Take(32).ToArray();
+            encryptor.IV = _iv;
             MemoryStream memoryStream = new MemoryStream();
             ICryptoTransform aesEncryptor = encryptor.CreateEncryptor();
             CryptoStream cryptoStream = new CryptoStream(memoryStream, aesEncryptor, CryptoStreamMode.Write);
@@ -33,16 +38,11 @@ namespace SafeRequest.NET {
             return cipherText;
         }
 
-        public static string DecryptString(string cipherText, string key, byte[] iv = null) {
-            // determine init vector
-            if (iv == null) iv = _iv;
-            // get byte array from key [ bcrypt hash = cost factor ;) ]
-            byte[] decKey = GetBCryptKey(key);
-            // decrypt cipher with key/iv
+        public string DecryptString(string cipherText) {
             Aes encryptor = Aes.Create();
             encryptor.Mode = CipherMode.CBC;
-            encryptor.Key = decKey.Take(32).ToArray();
-            encryptor.IV = iv;
+            encryptor.Key = _key.Take(32).ToArray();
+            encryptor.IV = _iv;
             MemoryStream memoryStream = new MemoryStream();
             ICryptoTransform aesDecryptor = encryptor.CreateDecryptor();
             CryptoStream cryptoStream = new CryptoStream(memoryStream, aesDecryptor, CryptoStreamMode.Write);
@@ -59,14 +59,6 @@ namespace SafeRequest.NET {
             }
             return plainText;
         }
-
-        private static byte[] GetBCryptKey(string key) {
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(key, 12);
-            return Encoding.ASCII.GetBytes(hashedPassword);
-        }
-
-        private static byte[] _iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
-        public void SetIV(byte[] iv) { _iv = iv; }
 
     }
 
