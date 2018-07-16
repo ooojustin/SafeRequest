@@ -11,7 +11,9 @@ namespace SafeRequest.NET {
 
     public class Networking {
 
-        private const string USER_AGENT = "SafeRequest.NET";
+        private static string USER_AGENT = "SafeRequest .NET";
+        private static string GetUserAgent() { return USER_AGENT; }
+        private static void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
 
         public static Response Request(string url, string key, RequestType type, NameValueCollection values = null) {
             Response response = new Response();
@@ -39,7 +41,9 @@ namespace SafeRequest.NET {
             return response;
         }
 
-        public static WebClient GetClient(string userAgent = USER_AGENT) {
+        public static WebClient GetClient(string userAgent = "") {
+            if (string.IsNullOrEmpty(userAgent))
+                userAgent = USER_AGENT;
             WebClient web = new WebClient();
             web.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
             web.Proxy = null;
