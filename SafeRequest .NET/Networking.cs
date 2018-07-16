@@ -13,7 +13,7 @@ namespace SafeRequest.NET {
 
         private const string USER_AGENT = "SafeRequest.NET";
 
-        public static Response Request(string url, RequestType type, NameValueCollection values = null) {
+        public static Response Request(string url, string key, RequestType type, NameValueCollection values = null) {
             Response response = new Response();
             try {
                 WebClient web = GetClient();
@@ -29,6 +29,8 @@ namespace SafeRequest.NET {
                         raw = Encoding.Default.GetString(rawBytes);
                         break;
                 }
+                Encryption enc = new Encryption(key);
+                raw = enc.DecryptString(raw);
                 response.Initialize(raw);
             } catch (Exception ex) {
                 response.status = false;

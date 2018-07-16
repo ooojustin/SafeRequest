@@ -13,7 +13,6 @@ namespace SafeRequest.NET {
         public Encryption(string key) {
             SHA256 mySHA256 = SHA256.Create();
             _key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(key));
-            Console.WriteLine(Encoding.Default.GetString(_key));
         }
 
         private byte[] _key;
