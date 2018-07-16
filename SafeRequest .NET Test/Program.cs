@@ -10,12 +10,8 @@ namespace SafeRequest.NET_Test {
     class Program {
 
         static void Main(string[] args) {
-            string password = "testing123";
-            Encryption enc = new Encryption(password);
-            string encrypted = enc.EncryptString("test");
-            string decrypted = enc.DecryptString(encrypted);
-            Console.WriteLine("encrypted: " + encrypted);
-            Console.WriteLine("decrypted: " + decrypted);
+            Response resp = Networking.Request("https://example.com/example.php", "your encryption key here", RequestType.GET);
+            Console.WriteLine(resp.message);
             Console.ReadKey();
         }
 
