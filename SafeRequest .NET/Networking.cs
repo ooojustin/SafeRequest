@@ -58,6 +58,7 @@ namespace SafeRequest.NET {
         public string raw;
         private Dictionary<string, object> data;
         public T GetData<T>(string key) { return (T)data[key]; }
+        public void AddData(string key, object value) { data.Add(key, value); }
         public bool DataExists(string key) { return data.ContainsKey(key); }
         public void Initialize(string _raw) {
             raw = _raw;
