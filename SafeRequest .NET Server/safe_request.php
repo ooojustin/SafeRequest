@@ -1,5 +1,17 @@
 <?php
 
+    /*
+    
+        === SafeRequest ===
+        Developed by Justin Garofolo
+        Open source .NET/PHP library to allow encrypted json data to be transferred between client and server.
+        Github: https://github.com/ooojustin/SafeRequest.NET
+        LICENSE: https://github.com/ooojustin/SafeRequest.NET/blob/master/LICENSE.md
+        
+    */
+
+    // Decrypts POST data from SafeRequest client.
+    // Example: $_POST = GetPost('secret_key');
     function GetPOST($encryption_key) {
         $enc = new Encryption($encryption_key);
         $data = file_get_contents('php://input');
@@ -7,6 +19,8 @@
         return json_decode($data, true);
     }
 
+    // Returns encrypted JSON information to SafeRequest client.
+    // Example: output(true, 'my encrypted string here', 'secret_key');
     function output($status, $message, $encryption_key, $extras = null) {
         $response = array('status' => $status ? true : false, 'message' => $message);
         if ($extras != null)
@@ -16,12 +30,20 @@
         $data = $enc->EncryptString($data);
         die($data);
     }
-
+    
+    // Combines 2 arrays. ($arr2 gets added to the end of $arr1)
     function array_fuse(&$arr1, $arr2) {
         foreach ($arr2 as $key => $value)
             $arr1[$key] = $value;
     }
-
+    
+    /* Encryption class to safely communicate with SafeRequest client.
+       Example:
+           $enc = new Encryption('secret_key);
+           $encrypted = $enc->EncryptString('secret message');
+           $decrypted = $enc->DecryptString($encrypted);
+           echo $decrypted; // outputs 'secret message'
+    */
     class Encryption {
     
         var $_key;
