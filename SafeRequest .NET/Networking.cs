@@ -12,8 +12,8 @@ namespace SafeRequest.NET {
     public class Networking {
 
         private static string USER_AGENT = "SafeRequest .NET";
-        private static string GetUserAgent() { return USER_AGENT; }
-        private static void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
+        public static string GetUserAgent() { return USER_AGENT; }
+        public static void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
 
         public static Response Request(string url, string key, RequestType type, NameValueCollection values = null) {
             Response response = new Response();
