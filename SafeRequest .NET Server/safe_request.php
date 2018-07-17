@@ -1,5 +1,12 @@
 <?php
 
+    function GetPOST($encryption_key) {
+        $enc = new Encryption($encryption_key);
+        $data = file_get_contents('php://input');
+        $data = $enc->DecryptString($data);
+        return json_decode($data, true);
+    }
+
     function output($status, $message, $encryption_key, $extras = null) {
         $response = array('status' => $status ? true : false, 'message' => $message);
         if ($extras != null)

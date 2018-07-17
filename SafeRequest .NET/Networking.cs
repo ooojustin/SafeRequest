@@ -20,6 +20,7 @@ namespace SafeRequest.NET {
             try {
                 WebClient web = GetClient();
                 string raw = string.Empty;
+                Encryption enc = new Encryption(key);
                 switch (type) {
                     case RequestType.GET:
                         raw = web.DownloadString(url);
@@ -27,11 +28,12 @@ namespace SafeRequest.NET {
                     case RequestType.POST:
                         if (values == null)
                             throw new Exception("Missing POST values.");
-                        byte[] rawBytes = web.UploadValues(url, values);
-                        raw = Encoding.Default.GetString(rawBytes);
+                        Dictionary<string, object> dictionary = GetDictionary(values);
+                        string rawPOST = JsonConvert.SerializeObject(dictionary);
+                        string POST = enc.EncryptString(rawPOST);
+                        raw = web.UploadString(url, POST);
                         break;
                 }
-                Encryption enc = new Encryption(key);
                 raw = enc.DecryptString(raw);
                 response.Initialize(raw);
             } catch (Exception ex) {
@@ -48,6 +50,13 @@ namespace SafeRequest.NET {
             web.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
             web.Proxy = null;
             return web;
+        }
+
+        private static Dictionary<string, object> GetDictionary(NameValueCollection values) {
+            var result = new Dictionary<string, object>();
+            foreach (string key in values.Keys)
+                result.Add(key, values[key]);
+            return result;
         }
 
     }
