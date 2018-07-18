@@ -16,6 +16,8 @@
         
         function __construct($key) {
             $this->enc = new Encryption($key);
+            if ($_SERVER["REQUEST_METHOD"] == "POST")
+                $_POST = $this->getPOST();
         }
         
         // Decrypts POST data from SafeRequest client.
