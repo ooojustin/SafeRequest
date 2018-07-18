@@ -15,17 +15,18 @@ namespace SafeRequest.NET_Test {
 
         static void Main(string[] args) {
 
+            NET.SafeRequest safeRequest = new NET.SafeRequest(ENCRYPTION_KEY);
             Response response;
 
             // POST example
             NameValueCollection values = new NameValueCollection();
             values["some_key"] = "some_value";
-            response = Networking.Request(URL, ENCRYPTION_KEY, RequestType.POST, values);
+            response = safeRequest.Request(URL, RequestType.POST, values);
             Console.WriteLine(response.message);
             Console.ReadKey();
 
             // GET example
-            response = Networking.Request(URL, ENCRYPTION_KEY, RequestType.GET);
+            response = safeRequest.Request(URL, RequestType.GET);
             Console.WriteLine(response.message);
             Console.ReadKey();
 

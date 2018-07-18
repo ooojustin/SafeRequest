@@ -9,18 +9,22 @@ using System.Threading.Tasks;
 
 namespace SafeRequest.NET {
 
-    public class Networking {
+    public class SafeRequest {
 
-        private static string USER_AGENT = "SafeRequest .NET";
-        public static string GetUserAgent() { return USER_AGENT; }
-        public static void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
+        public SafeRequest(string encryptionKey) {
+            encryption = new Encryption(encryptionKey);
+        }
 
-        public static Response Request(string url, string key, RequestType type, NameValueCollection values = null) {
-            Response response = new Response();
+        private Encryption encryption;
+        private string USER_AGENT = "SafeRequest .NET";
+        public string GetUserAgent() { return USER_AGENT; }
+        public void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
+
+        public Response Request(string url, RequestType type, NameValueCollection values = null) {
+            Response response = new Response(type, encryption);
             try {
                 WebClient web = GetClient();
                 string raw = string.Empty;
-                Encryption enc = new Encryption(key);
                 switch (type) {
                     case RequestType.GET:
                         raw = web.DownloadString(url);
@@ -29,12 +33,15 @@ namespace SafeRequest.NET {
                         if (values == null)
                             throw new Exception("Missing POST values.");
                         Dictionary<string, object> dictionary = GetDictionary(values);
+                        if (dictionary.ContainsKey("authentication_key"))
+                            throw new Exception("Key \"authentication_key\" must not be defined.");
+                        dictionary.Add("authentication_key", response.POSTAuthentication());
                         string rawPOST = JsonConvert.SerializeObject(dictionary);
-                        string POST = enc.EncryptString(rawPOST);
+                        string POST = encryption.EncryptString(rawPOST);
                         raw = web.UploadString(url, POST);
                         break;
                 }
-                raw = enc.DecryptString(raw);
+                raw = encryption.DecryptString(raw);
                 response.Initialize(raw);
             } catch (Exception ex) {
                 response.status = false;
@@ -43,7 +50,7 @@ namespace SafeRequest.NET {
             return response;
         }
 
-        public static WebClient GetClient(string userAgent = "") {
+        public WebClient GetClient(string userAgent = "") {
             if (string.IsNullOrEmpty(userAgent))
                 userAgent = USER_AGENT;
             WebClient web = new WebClient();
@@ -61,24 +68,47 @@ namespace SafeRequest.NET {
 
     }
 
-    public struct Response {
+    public class Response {
+
+        public Response(RequestType type, Encryption encryption) {
+            _type = type;
+            if (type == RequestType.POST) {
+                _encryption = encryption;
+                authenticationKey = Convert.ToString(new Random().Next(10000, 100000));
+            }
+        }
+
+        // public variables
         public bool status;
         public string message;
         public string raw;
         private Dictionary<string, object> data;
+
+        // public functions
         public T GetData<T>(string key) { return (T)data[key]; }
         public void AddData(string key, object value) { data.Add(key, value); }
         public bool DataExists(string key) { return data.ContainsKey(key); }
+        public string POSTAuthentication() { return _encryption.EncryptString(authenticationKey); }
+
+        // private variables
+        private RequestType _type;
+        private Encryption _encryption;
+        private string authenticationKey;
+
         public void Initialize(string _raw) {
             raw = _raw;
             data = JsonConvert.DeserializeObject<Dictionary<string, object>>(raw);
+            if (_type == RequestType.POST)
+                if (!DataExists("authentication_key") || GetData<string>("authentication_key") != authenticationKey)
+                    throw new Exception("Response authentication failed.");
             if (DataExists("status") && DataExists("message")) {
                 status = GetData<bool>("status");
                 message = GetData<string>("message");
-            }
-            else throw new Exception("Response is missing required data.");
+            } else throw new Exception("Response is missing required data.");
         }
+
     }
+
 
     public enum RequestType { NONE, GET, POST }
 
