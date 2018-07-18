@@ -28,7 +28,7 @@
         
         // Returns encrypted JSON information to SafeRequest client.
         // Example: output(true, 'my encrypted string here', 'secret_key');
-        function output($status, $message, $encryption_key, $extras = null) {
+        function output($status, $message, $extras = null) {
             $response = array('status' => $status ? true : false, 'message' => $message);
             if ($extras != null)
                 array_fuse($response, $extras);
