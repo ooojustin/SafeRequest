@@ -17,10 +17,8 @@
         
         function __construct($key) {
             $this->enc = new Encryption($key);
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $_POST = $this->getPOST();
-                $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
-            }
+            $_POST = $this->getPOST();
+            $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
         }
         
         // Decrypts POST data from SafeRequest client.
@@ -37,8 +35,7 @@
             $response = array('status' => $status ? true : false, 'message' => $message);
             if ($extras != null)
                 array_fuse($response, $extras);
-            if ($_SERVER["REQUEST_METHOD"] == "POST")
-                $response['authentication_key'] = $this->auth;
+            $response['authentication_key'] = $this->auth;
             $data = json_encode($response);
             $data = $this->enc->EncryptString($data);
             die($data);

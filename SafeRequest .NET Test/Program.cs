@@ -21,12 +21,13 @@ namespace SafeRequest.NET_Test {
             // POST example
             NameValueCollection values = new NameValueCollection();
             values["some_key"] = "some_value";
-            response = safeRequest.Request(URL, RequestType.POST, values);
+            response = safeRequest.Request(URL, values);
             Console.WriteLine(response.message);
             Console.ReadKey();
 
             // GET example
-            response = safeRequest.Request(URL, RequestType.GET);
+            // Note: Requests with null values still post an authentication key to verify the validity of the request.
+            response = safeRequest.Request(URL);
             Console.WriteLine(response.message);
             Console.ReadKey();
 
