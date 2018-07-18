@@ -10,6 +10,7 @@ namespace SafeRequest.NET_Test {
 
     class Program {
 
+        private const string URL = "https://example.com/example.php";
         private const string ENCRYPTION_KEY = "your encryption key here";
 
         static void Main(string[] args) {
@@ -19,12 +20,12 @@ namespace SafeRequest.NET_Test {
             // POST example
             NameValueCollection values = new NameValueCollection();
             values["some_key"] = "some_value";
-            response = Networking.Request("https://example.com/example.php", ENCRYPTION_KEY, RequestType.POST, values);
+            response = Networking.Request(URL, ENCRYPTION_KEY, RequestType.POST, values);
             Console.WriteLine(response.message);
             Console.ReadKey();
 
             // GET example
-            response = Networking.Request("https://justin-login.online/SafeRequest/example.php", ENCRYPTION_KEY, RequestType.GET);
+            response = Networking.Request(URL, ENCRYPTION_KEY, RequestType.GET);
             Console.WriteLine(response.message);
             Console.ReadKey();
 
