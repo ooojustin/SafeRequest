@@ -15,10 +15,13 @@ namespace SafeRequest.NET {
             encryption = new Encryption(encryptionKey);
         }
 
-        private Encryption encryption;
         private string USER_AGENT = "SafeRequest .NET";
         public string GetUserAgent() { return USER_AGENT; }
         public void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
+
+        private Encryption encryption;
+        public string EncryptString(string plainText) { return encryption.EncryptString(plainText); }
+        public string DecryptString(string cipherText) { return encryption.DecryptString(cipherText); }
 
         public Response Request(string url, NameValueCollection values = null) {
             Response response = new Response(encryption);
