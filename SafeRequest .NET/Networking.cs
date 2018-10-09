@@ -93,7 +93,7 @@ namespace SafeRequest.NET {
                 throw new Exception("Response authentication failed.");
             if (DataExists("status") && DataExists("message")) {
                 status = GetData<bool>("status");
-                message = GetData<string>("message");
+                message = GetData<string>("message").Replace("\n", Environment.NewLine);
             } else throw new Exception("Response is missing required data.");
         }
 
