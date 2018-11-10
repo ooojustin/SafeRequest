@@ -18,7 +18,7 @@ namespace SafeRequest {
                     encryption.SetIV(iv);
         }
 
-        private string USER_AGENT = "SafeRequest .NET";
+        private string USER_AGENT = "SafeRequest";
         public string GetUserAgent() { return USER_AGENT; }
         public void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
 
