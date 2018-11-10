@@ -18,7 +18,8 @@
         function __construct($key, $iv = null) {
             $this->enc = new Encryption($key);
             if ($iv !== null)
-                $this->enc->SetIV($iv);
+                if (count($iv) == 16)
+                    $this->enc->SetIV($iv);
             $_POST = $this->getPOST();
             $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
         }
@@ -34,7 +35,7 @@
         // Returns encrypted JSON information to SafeRequest client.
         // Example: output(true, 'my encrypted string here', 'secret_key');
         function output($status, $message, $extras = null) {
-            $response = array('status' => $status ? true : false, 'message' => $message);
+            $response = array('status' => $status, 'message' => $message);
             if ($extras != null)
                 array_fuse($response, $extras);
             $response['authentication_key'] = $this->auth;
@@ -60,7 +61,7 @@
     
         function __construct($key) {
             $this->_key = substr(hash('sha256', $key, true), 0, 32);
-            $this->_iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
+            $this->_iv = $this->bytes_to_string(array(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0));
         }
     
         function EncryptString($plainText) {
@@ -72,7 +73,11 @@
         }
     
         function SetIV($iv) {
-            $this->_iv = $iv;
+            $this->_iv = $this->bytes_to_string($iv);
+        }
+
+        function bytes_to_string($bytes) {
+            return implode(array_map("chr", $bytes));
         }
     
     }
