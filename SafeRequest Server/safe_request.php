@@ -15,8 +15,10 @@
         var $auth;
         var $enc;
         
-        function __construct($key) {
+        function __construct($key, $iv = null) {
             $this->enc = new Encryption($key);
+            if ($iv !== null)
+                $this->enc->SetIV($iv);
             $_POST = $this->getPOST();
             $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
         }
