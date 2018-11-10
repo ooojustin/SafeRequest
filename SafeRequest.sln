@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeRequest .NET", "SafeRequest .NET\SafeRequest .NET.csproj", "{DADA4493-565C-459A-B2F6-7A4337490A7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeRequest", "SafeRequest\SafeRequest.csproj", "{DADA4493-565C-459A-B2F6-7A4337490A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeRequest .NET Test", "SafeRequest .NET Test\SafeRequest .NET Test.csproj", "{79305F35-594A-4EF6-AD41-2E0517693941}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeRequest-Test", "SafeRequest Test\SafeRequest-Test.csproj", "{79305F35-594A-4EF6-AD41-2E0517693941}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

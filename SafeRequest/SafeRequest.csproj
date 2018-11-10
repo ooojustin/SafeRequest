@@ -7,8 +7,8 @@
     <ProjectGuid>{DADA4493-565C-459A-B2F6-7A4337490A7B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SafeRequest.NET</RootNamespace>
-    <AssemblyName>SafeRequest.NET</AssemblyName>
+    <RootNamespace>SafeRequest</RootNamespace>
+    <AssemblyName>SafeRequest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

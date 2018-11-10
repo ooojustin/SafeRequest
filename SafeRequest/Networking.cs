@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SafeRequest.NET {
+namespace SafeRequest {
 
     public class SafeRequest {
 
