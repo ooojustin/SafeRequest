@@ -11,8 +11,11 @@ namespace SafeRequest {
 
     public class SafeRequest {
 
-        public SafeRequest(string encryptionKey) {
+        public SafeRequest(string encryptionKey, byte[] iv = null) {
             encryption = new Encryption(encryptionKey);
+            if (iv != null)
+                if (iv.Count() == 16)
+                    encryption.SetIV(iv);
         }
 
         private string USER_AGENT = "SafeRequest .NET";
