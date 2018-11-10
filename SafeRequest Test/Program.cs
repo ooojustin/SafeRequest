@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SafeRequest.NET;
+using SafeRequest;
 
 namespace SafeRequest.Test {
 
@@ -15,7 +15,7 @@ namespace SafeRequest.Test {
 
         static void Main(string[] args) {
 
-            NET.SafeRequest safeRequest = new NET.SafeRequest(ENCRYPTION_KEY);
+            SafeRequest safeRequest = new SafeRequest(ENCRYPTION_KEY);
             Response response;
 
             // POST example

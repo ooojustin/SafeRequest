@@ -32,9 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SafeRequest.NET, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SafeRequest, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SafeRequest .NET\bin\Debug\SafeRequest.NET.dll</HintPath>
+      <HintPath>..\SafeRequest\bin\Release\SafeRequest.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
