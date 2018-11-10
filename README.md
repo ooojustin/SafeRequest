@@ -1,4 +1,4 @@
-# SafeRequest .NET 
+# SafeRequest
 
 Open source .NET/PHP library to allow encrypted json data to be transferred between client and server.
 
