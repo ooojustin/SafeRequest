@@ -80,7 +80,7 @@ namespace SafeRequest {
         private Dictionary<string, object> data;
 
         // public functions
-        public T GetData<T>(string key) { return (T)data[key]; }
+        public T GetData<T>(string key) { return (T)Convert.ChangeType(data[key], typeof(T)); }
         public void AddData(string key, object value) { data.Add(key, value); }
         public bool DataExists(string key) { return data.ContainsKey(key); }
         public string EncryptedAuth() { return _encryption.EncryptString(authenticationKey); }
