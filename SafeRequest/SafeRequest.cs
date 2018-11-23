@@ -5,8 +5,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SafeRequest {
 
