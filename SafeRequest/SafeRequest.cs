@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,15 @@ namespace SafeRequest {
 
         public SafeRequest(string encryptionKey, byte[] iv = null) {
             encryption = new Encryption(encryptionKey);
+            SetIV(iv);
+        }
+
+        public SafeRequest(SecureString encryptionKey, byte[] iv = null) {
+            encryption = new Encryption(encryptionKey);
+            SetIV(iv);
+        }
+
+        private void SetIV(byte[] iv) {
             if (iv != null)
                 if (iv.Count() == 16)
                     encryption.SetIV(iv);

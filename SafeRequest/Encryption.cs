@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,18 @@ namespace SafeRequest {
     public class Encryption {
 
         public Encryption(string key) {
+            byte[] bytes = Encoding.ASCII.GetBytes(key);
+            EstablishKey(bytes);
+        }
+
+        public Encryption(SecureString key) {
+            byte[] bytes = key.ToByteArray(Encoding.ASCII);
+            EstablishKey(bytes);
+        }
+
+        private void EstablishKey(byte[] bytes) {
             SHA256 mySHA256 = SHA256.Create();
-            _key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(key));
+            _key = mySHA256.ComputeHash(bytes);
         }
 
         private byte[] _key;
