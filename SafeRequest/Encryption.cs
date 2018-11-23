@@ -9,19 +9,18 @@ namespace SafeRequest {
 
     public class Encryption {
 
-        public Encryption(string key) {
-            byte[] bytes = Encoding.ASCII.GetBytes(key);
-            EstablishKey(bytes);
-        }
-
         public Encryption(SecureString key) {
-            byte[] bytes = key.ToByteArray(Encoding.ASCII);
-            EstablishKey(bytes);
+            key.Process<bool>(EstablishKey);
         }
 
-        private void EstablishKey(byte[] bytes) {
-            SHA256 mySHA256 = SHA256.Create();
-            _key = mySHA256.ComputeHash(bytes);
+        private bool EstablishKey(byte[] bytes) {
+            try {
+                SHA256 mySHA256 = SHA256.Create();
+                _key = mySHA256.ComputeHash(bytes);
+                return true;
+            } catch (Exception) {
+                return false;
+            }
         }
 
         private byte[] _key;
