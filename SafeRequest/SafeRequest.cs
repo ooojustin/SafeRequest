@@ -11,12 +11,6 @@ namespace SafeRequest {
     public class SafeRequest {
 
         public SafeRequest(string key, byte[] iv = null) {
-            SecureString secureKey = key.ToSecureString();
-            encryption = new Encryption(secureKey);
-            SetIV(iv);
-        }
-
-        public SafeRequest(SecureString key, byte[] iv = null) {
             encryption = new Encryption(key);
             SetIV(iv);
         }

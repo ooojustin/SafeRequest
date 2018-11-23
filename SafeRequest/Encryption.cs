@@ -9,18 +9,11 @@ namespace SafeRequest {
 
     public class Encryption {
 
-        public Encryption(SecureString key) {
-            key.Process<bool>(EstablishKey);
-        }
-
-        private bool EstablishKey(byte[] bytes) {
-            try {
-                SHA256 mySHA256 = SHA256.Create();
-                _key = mySHA256.ComputeHash(bytes);
-                return true;
-            } catch (Exception) {
-                return false;
-            }
+        public Encryption(string key) {
+            byte[] bytes = Encoding.ASCII.GetBytes(key);
+            using (SHA256 sha = SHA256.Create())
+                _key = sha.ComputeHash(bytes);
+            _key = _key.Take(32).ToArray();
         }
 
         private byte[] _key;
@@ -30,7 +23,7 @@ namespace SafeRequest {
         public string EncryptString(string plainText) {
             Aes encryptor = Aes.Create();
             encryptor.Mode = CipherMode.CBC;
-            encryptor.Key = _key.Take(32).ToArray();
+            encryptor.Key = _key;
             encryptor.IV = _iv;
             MemoryStream memoryStream = new MemoryStream();
             ICryptoTransform aesEncryptor = encryptor.CreateEncryptor();
@@ -48,7 +41,7 @@ namespace SafeRequest {
         public string DecryptString(string cipherText) {
             Aes encryptor = Aes.Create();
             encryptor.Mode = CipherMode.CBC;
-            encryptor.Key = _key.Take(32).ToArray();
+            encryptor.Key = _key;
             encryptor.IV = _iv;
             MemoryStream memoryStream = new MemoryStream();
             ICryptoTransform aesDecryptor = encryptor.CreateDecryptor();
