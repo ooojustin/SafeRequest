@@ -21,9 +21,8 @@ namespace SafeRequest {
                     encryption.SetIV(iv);
         }
 
-        private string USER_AGENT = "SafeRequest";
-        public string GetUserAgent() { return USER_AGENT; }
-        public void SetUserAgent(string userAgent) { USER_AGENT = userAgent; }
+        public string UserAgent = "SafeRequest";
+        public bool NullifyProxy = true;
 
         private Encryption encryption;
         public string EncryptString(string plainText) { return encryption.EncryptString(plainText); }
@@ -51,13 +50,18 @@ namespace SafeRequest {
             return response;
         }
 
-        public WebClient GetClient(string userAgent = "") {
-            if (string.IsNullOrEmpty(userAgent))
-                userAgent = USER_AGENT;
+        public WebClient GetClient() {
+
             WebClient web = new WebClient();
-            web.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
-            web.Proxy = null;
+
+            if (!string.IsNullOrEmpty(UserAgent))
+                web.Headers.Add(HttpRequestHeader.UserAgent, UserAgent);
+
+            if (NullifyProxy)
+                web.Proxy = null;
+
             return web;
+
         }
 
         private static Dictionary<string, object> GetDictionary(NameValueCollection values) {
