@@ -6,6 +6,7 @@ Open source .NET/PHP library to allow encrypted json data to be transferred betw
 [![Nuget](https://img.shields.io/nuget/v/SafeRequest.svg)](https://www.nuget.org/packages/SafeRequest)
 [![Nuget](https://img.shields.io/nuget/dt/SafeRequest.svg?color=magenta&label=downloads)](https://www.nuget.org/packages/SafeRequest)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ooojustin/SafeRequest.svg?color=%23CD0744)
+[![AppVeyor](https://img.shields.io/appveyor/ci/ooojustin/saferequest.svg)](https://ci.appveyor.com/project/ooojustin/saferequest)
 
 ## Notes
 
