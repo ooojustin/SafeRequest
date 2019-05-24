@@ -1,65 +1,77 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SafeRequest {
+namespace SafeRequest
+{
+    public class Encryption
+    {
+        private readonly byte[] _key;
 
-    public class Encryption {
+        public Encryption(string key)
+            : this(key, Encoding.ASCII)
+        { }
 
-        public Encryption(string key) {
-            byte[] bytes = Encoding.ASCII.GetBytes(key);
-            using (SHA256 sha = SHA256.Create())
+        public Encryption(string key, Encoding encoding)
+        {
+            Encoding = encoding;
+
+            var bytes = encoding.GetBytes(key);
+            using (var sha = SHA256.Create())
                 _key = sha.ComputeHash(bytes);
+
             _key = _key.Take(32).ToArray();
+            IV = Enumerable.Range(1, 16)
+                .Select(x => (byte)0)
+                .ToArray();
         }
 
-        private byte[] _key;
-        private byte[] _iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
-        public void SetIV(byte[] iv) { _iv = iv; }
+        public Encoding Encoding { get; private set; }
+        public byte[] IV { get; private set; }
 
-        public string EncryptString(string plainText) {
-            Aes encryptor = Aes.Create();
-            encryptor.Mode = CipherMode.CBC;
-            encryptor.Key = _key;
-            encryptor.IV = _iv;
-            MemoryStream memoryStream = new MemoryStream();
-            ICryptoTransform aesEncryptor = encryptor.CreateEncryptor();
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, aesEncryptor, CryptoStreamMode.Write);
-            byte[] plainBytes = Encoding.ASCII.GetBytes(plainText);
-            cryptoStream.Write(plainBytes, 0, plainBytes.Length);
-            cryptoStream.FlushFinalBlock();
-            byte[] cipherBytes = memoryStream.ToArray();
-            memoryStream.Close();
-            cryptoStream.Close();
-            string cipherText = Convert.ToBase64String(cipherBytes, 0, cipherBytes.Length);
-            return cipherText;
+        public string DecryptString(string cipherText)
+        {
+            var cipherBytes = Convert.FromBase64String(cipherText);
+
+            var plainBytes = PerformAesCryption(c => c.CreateDecryptor(), cipherBytes);
+            return Encoding.GetString(plainBytes, 0, plainBytes.Length);
         }
 
-        public string DecryptString(string cipherText) {
-            Aes encryptor = Aes.Create();
-            encryptor.Mode = CipherMode.CBC;
-            encryptor.Key = _key;
-            encryptor.IV = _iv;
-            MemoryStream memoryStream = new MemoryStream();
-            ICryptoTransform aesDecryptor = encryptor.CreateDecryptor();
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, aesDecryptor, CryptoStreamMode.Write);
-            string plainText = String.Empty;
-            try {
-                byte[] cipherBytes = Convert.FromBase64String(cipherText);
-                cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
+        public string EncryptString(string plainText)
+        {
+            var plainBytes = Encoding.GetBytes(plainText);
+
+            var cipherBytes = PerformAesCryption(c => c.CreateEncryptor(), plainBytes);
+            return Convert.ToBase64String(cipherBytes, 0, cipherBytes.Length);
+        }
+
+        public void SetIV(byte[] iv)
+        {
+            IV = iv;
+        }
+
+        private byte[] PerformAesCryption(Func<SymmetricAlgorithm, ICryptoTransform> cryptoDerivationFunction, byte[] data)
+        {
+            if (cryptoDerivationFunction == null)
+                throw new ArgumentNullException(nameof(cryptoDerivationFunction));
+
+            var crypto = Aes.Create();
+            crypto.Mode = CipherMode.CBC;
+            crypto.Key = _key;
+            crypto.IV = IV;
+
+            var cryptor = cryptoDerivationFunction(crypto);
+
+            using (var memoryStream = new MemoryStream())
+            using (var cryptoStream = new CryptoStream(memoryStream, cryptor, CryptoStreamMode.Write))
+            {
+                cryptoStream.Write(data, 0, data.Length);
                 cryptoStream.FlushFinalBlock();
-                byte[] plainBytes = memoryStream.ToArray();
-                plainText = Encoding.ASCII.GetString(plainBytes, 0, plainBytes.Length);
-            } finally {
-                memoryStream.Close();
-                cryptoStream.Close();
+
+                return memoryStream.ToArray();
             }
-            return plainText;
         }
-
     }
-
 }
