@@ -10,7 +10,7 @@ Open source .NET/PHP library to allow encrypted json data to be transferred betw
 
 ## Notes
 
-* This project is still in development as of July 16th, 2018.
+* This project is no longer being maintained.
 * Now available on NuGet! - [SafeRequest](https://www.nuget.org/packages/SafeRequest/)
 
 ## Authors
